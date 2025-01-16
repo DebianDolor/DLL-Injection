@@ -130,12 +130,16 @@
     <ClCompile Include="compileDLL.cpp" />
     <ClCompile Include="DLLInjection.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="PEInjection.cpp" />
+    <ClCompile Include="processHollowing.cpp" />
     <ClCompile Include="reflectiveDLLInjection.cpp" />
     <ClCompile Include="unhookDLL.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DLLInjection.h" />
+    <ClInclude Include="PEInjection.h" />
+    <ClInclude Include="processHollowing.h" />
     <ClInclude Include="reflectiveDLLInjection.h" />
     <ClInclude Include="unhookDLL.h" />
     <ClInclude Include="unhookingData.h" />
